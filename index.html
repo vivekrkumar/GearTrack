@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gear Track - AI Sports Equipment Tracker Pitch Deck</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom styles for the pitch deck */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* bg-gray-900 */
+            color: #F9FAFB; /* text-gray-100 */
+        }
+
+        .scroll-container {
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            height: 100vh;
+        }
+
+        .slide {
+            scroll-snap-align: start;
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 4rem;
+        }
+        
+        @media (max-width: 768px) {
+            .slide {
+                padding: 1rem 1.5rem;
+                height: auto;
+                min-height: 100vh;
+            }
+            .solution-flow {
+                flex-direction: column;
+            }
+        }
+
+        /* Animation classes */
+        .fade-in-up {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s cubic-bezier(0.165, 0.84, 0.44, 1), transform 0.8s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        .is-visible .fade-in-up {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered animation delays */
+        .is-visible .delay-1 { transition-delay: 0.1s; }
+        .is-visible .delay-2 { transition-delay: 0.2s; }
+        .is-visible .delay-3 { transition-delay: 0.3s; }
+        .is-visible .delay-4 { transition-delay: 0.4s; }
+        .is-visible .delay-5 { transition-delay: 0.5s; }
+        .is-visible .delay-6 { transition-delay: 0.6s; }
+        .is-visible .delay-7 { transition-delay: 0.7s; }
+
+
+        /* Custom theme colors */
+        .text-orange { color: #F97316; } /* text-orange-500 */
+        .bg-orange { background-color: #F97316; }
+        .border-orange { border-color: #F97316; }
+        .ring-orange { ring-color: #F97316; }
+        
+        /* Table styles */
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem; /* Slightly reduced font size for more columns */
+        }
+        .table-custom th, .table-custom td {
+            padding: 0.65rem 0.75rem; /* Adjusted padding */
+            text-align: left;
+            border-bottom: 1px solid #374151; /* border-gray-700 */
+        }
+        .table-custom th {
+            background-color: #1F2937; /* bg-gray-800 */
+            font-weight: 600;
+        }
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+        .table-custom .highlight-cell {
+            color: #F97316;
+            font-weight: 700;
+        }
+        .table-custom td:first-child {
+            font-weight: 600;
+            color: #D1D5DB; /* text-gray-300 */
+        }
+
+        /* Side Navigation Styles */
+        #side-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 280px;
+            background-color: #1F2937; /* bg-gray-800 */
+            z-index: 100;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease-in-out;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+        }
+        #side-nav.open {
+            transform: translateX(0);
+        }
+        #side-nav .nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            font-size: 1.1rem;
+            color: #D1D5DB; /* text-gray-300 */
+            transition: background-color 0.2s, color 0.2s;
+            text-decoration: none;
+        }
+        #side-nav .nav-link:hover, #side-nav .nav-link.active {
+            background-color: #F97316; /* bg-orange-500 */
+            color: white;
+        }
+
+        #nav-toggle {
+            position: fixed;
+            top: 1.5rem;
+            left: 1.5rem;
+            z-index: 110;
+            background-color: #F97316;
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+        }
+        
+        #nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 99;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        #nav-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+    </style>
+</head>
+<body>
+    <button id="nav-toggle" title="Toggle Navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+    </button>
+    
+    <div id="nav-overlay"></div>
+
+    <nav id="side-nav">
+        <h2 class="text-2xl font-bold text-white mb-8">Navigation</h2>
+        <ul class="space-y-2">
+            <li><a href="#slide1" class="nav-link">Title</a></li>
+            <li><a href="#slide2" class="nav-link">The Problem</a></li>
+            <li><a href="#slide3" class="nav-link">Our Solution</a></li>
+            <li><a href="#slide4" class="nav-link">The Product</a></li>
+            <li><a href="#slide5" class="nav-link">Market Opportunity</a></li>
+            <li><a href="#slide6" class="nav-link">Competitors</a></li>
+            <li><a href="#slide7" class="nav-link">Business Model</a></li>
+            <li><a href="#slide8" class="nav-link">Roadmap</a></li>
+            <li><a href="#slide9" class="nav-link">Team & Ask</a></li>
+        </ul>
+    </nav>
+
+    <div class="scroll-container">
+        <section class="slide" id="slide1">
+            <div class="text-center animate-on-scroll">
+                <h1 class="text-5xl md:text-7xl font-bold fade-in-up">
+                    <span class="text-orange">Gear Track</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-light mt-4 fade-in-up delay-1">The AI-Powered Sports Equipment Tracker</h2>
+                <p class="text-lg md:text-xl text-gray-300 mt-8 max-w-3xl mx-auto fade-in-up delay-2">Play Safer. Perform Better.</p>
+                <p class="text-md md:text-lg text-gray-400 mt-4 max-w-3xl mx-auto fade-in-up delay-3">Empowering Recreational Athletes with Smart Gear Insights, Globally.</p>
+                <div class="mt-16 text-gray-400 text-sm fade-in-up delay-4">
+                    <svg class="w-6 h-6 animate-bounce mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                    Scroll Down
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide2">
+            <div class="max-w-6xl w-full animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up"><span class="text-orange">The Problem</span> We're Solving</h2>
+                <div class="grid md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-gray-800 p-6 rounded-lg fade-in-up delay-1">
+                        <h3 class="text-xl font-bold text-orange mb-3">Increased Injury Risk</h3>
+                        <p class="text-gray-300">Shoes with limited grip can cause slips and sprains. Damaged frames can lead to wrist pain or tennis elbow. Playing safe means using safe equipment.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg fade-in-up delay-2">
+                        <h3 class="text-xl font-bold text-orange mb-3">Compromised Performance</h3>
+                        <p class="text-gray-300">Worn-out gear like tennis balls with bad bounce, damaged racket frames, and unstable shoes directly hinders performance and leads to unpredictable play.</p>
+                    </div>
+                    <div class="bg-gray-800 p-6 rounded-lg fade-in-up delay-3">
+                        <h3 class="text-xl font-bold text-orange mb-3">Lack of Awareness</h3>
+                        <p class="text-gray-300">Most players simply don't know when their equipment is past its prime. They lack a convenient, data-driven way to assess gear health.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide3">
+             <div class="max-w-6xl w-full animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">A Complete <span class="text-orange">Ecosystem for Athletes</span></h2>
+                <p class="text-center text-lg text-gray-300 max-w-3xl mx-auto mb-16 fade-in-up delay-1">From gear health to personal performance, our app provides a holistic solution for recreational players.</p>
+                
+                <div class="grid md:grid-cols-4 gap-8 items-start text-center">
+                    <div class="fade-in-up delay-2">
+                        <div class="bg-orange text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto text-4xl font-bold">1</div>
+                        <h3 class="font-semibold text-xl mt-4">Snap</h3>
+                        <p class="text-gray-400">Upload photos of gear.</p>
+                    </div>
+                     <div class="fade-in-up delay-3">
+                        <div class="bg-orange text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto text-4xl font-bold">2</div>
+                        <h3 class="font-semibold text-xl mt-4">Analyze & Score</h3>
+                        <p class="text-gray-400">AI provides a "health score".</p>
+                    </div>
+                     <div class="fade-in-up delay-4">
+                        <div class="bg-orange text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto text-4xl font-bold">3</div>
+                        <h3 class="font-semibold text-xl mt-4">Action</h3>
+                        <p class="text-gray-400">Get advice: repair or replace.</p>
+                    </div>
+                    <div class="fade-in-up delay-5">
+                        <div class="bg-blue-500 text-white rounded-full w-24 h-24 flex items-center justify-center mx-auto text-4xl font-bold">4</div>
+                        <h3 class="font-semibold text-xl mt-4 text-blue-400">Improve (Future)</h3>
+                        <p class="text-gray-400">Upload videos for analysis & get expert coaching.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide4">
+            <div class="max-w-6xl w-full animate-on-scroll">
+                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">The <span class="text-orange">MVP</span> for Tennis</h2>
+                 <div class="grid md:grid-cols-2 gap-10">
+                    <div class="fade-in-up delay-1">
+                        <h3 class="text-2xl font-semibold mb-4">Core Functionality</h3>
+                        <ul class="space-y-3 text-gray-300 list-disc list-inside">
+                            <li><span class="font-semibold text-white">User Profile & Onboarding:</span> Personalized setup for tennis players.</li>
+                            <li><span class="font-semibold text-white">Equipment Tracking:</span> Add and manage Rackets, Shoes, and Balls.</li>
+                            <li><span class="font-semibold text-white">Usage Logging:</span> Track play sessions to monitor gear lifespan.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-800 p-8 rounded-lg fade-in-up delay-2">
+                        <h3 class="text-2xl font-semibold mb-4 text-orange">AI-Powered Analysis</h3>
+                        <ul class="space-y-3 text-gray-300 list-disc list-inside">
+                            <li><span class="font-semibold text-white">Image Upload & AI Engine:</span> Proprietary model trained on thousands of images.</li>
+                             <li><span class="font-semibold text-white">Condition Scoring:</span> Get an objective score reflecting wear level.</li>
+                             <li><span class="font-semibold text-white">Actionable Recommendations:</span> Clear advice like "Replace Racket" or "Check Shoe Sole".</li>
+                        </ul>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide5">
+            <div class="max-w-6xl w-full animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Massive <span class="text-orange">Global Potential</span></h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="fade-in-up delay-1">
+                        <h3 class="text-2xl font-bold mb-4">Market Funnel (Bangalore - Tennis)</h3>
+                        <div class="space-y-3 bg-gray-800 p-6 rounded-lg">
+                            <div>
+                                <p class="text-lg"><strong class="text-orange">TAM:</strong> 650,000</p>
+                                <p class="text-sm text-gray-400">Recreational tennis players.</p>
+                            </div>
+                            <div class="border-t border-gray-700 pt-3 mt-3">
+                                <p class="text-lg"><strong class="text-orange">SAM:</strong> 195,000 <span class="text-base text-gray-300">(30% of TAM)</span></p>
+                                <p class="text-sm text-gray-400">Potential users who will show interest in the app.</p>
+                            </div>
+                            <div class="border-t border-gray-700 pt-3 mt-3">
+                                <p class="text-lg"><strong class="text-orange">SOM:</strong> ~29,000 <span class="text-base text-gray-300">(15% of SAM)</span></p>
+                                <p class="text-sm text-gray-400">Our initial target active user base, a fraction of whom will become paid users.</p>
+                            </div>
+                        </div>
+                    </div>
+                     <div class="fade-in-up delay-2">
+                        <h3 class="text-2xl font-bold mb-4">Broader Vision & Scalability</h3>
+                         <div class="space-y-3 bg-gray-800 p-6 rounded-lg h-full flex flex-col justify-around">
+                            <div>
+                                <p class="font-semibold text-white">India-Wide & Multi-Sport</p>
+                                <p class="text-gray-300">Expanding to Tennis, Badminton, Squash, & Running increases our Indian SOM to over <strong class="text-orange">755,000</strong> users.</p>
+                            </div>
+                            <div>
+                                <p class="font-semibold text-white">Ecosystem Expansion</p>
+                                <p class="text-gray-300">We will build an ecosystem by integrating an <strong class="text-orange">in-app coaching marketplace</strong>, where users pay for expert video analysis, creating a new high-value revenue stream.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide6">
+            <div class="max-w-7xl w-full animate-on-scroll">
+                <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 fade-in-up">Competitive <span class="text-orange">Landscape</span></h2>
+                <div class="overflow-x-auto fade-in-up delay-1">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Feature / App</th>
+                                <th class="text-orange">Your App</th>
+                                <th>SwingVision</th>
+                                <th>TennisKeeper</th>
+                                <th>RacketTune</th>
+                                <th>Shoe Trackers</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Primary Focus</td><td class="highlight-cell">Equipment Health</td><td>Player Performance</td><td>Stat Tracking</td><td>String Tension</td><td>Shoe Mileage</td></tr>
+                            <tr><td>AI-Powered Visual Analysis</td><td class="highlight-cell">YES (Core)</td><td>NO</td><td>NO</td><td>NO</td><td>NO</td></tr>
+                            <tr><td>Expert Video Coaching</td><td class="highlight-cell">YES (Planned)</td><td>Limited AI analysis</td><td>NO</td><td>NO</td><td>NO</td></tr>
+                            <tr><td>Multi-Sport (Planned)</td><td class="highlight-cell">YES</td><td>Limited</td><td>Tennis</td><td>Tennis</td><td>Running</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-center mt-8 text-lg text-gray-300 fade-in-up delay-2">
+                    <strong class="text-orange">Our Unique Selling Proposition:</strong> We empower players by connecting equipment health with opportunities for performance coaching.
+                </p>
+            </div>
+        </section>
+
+        <section class="slide" id="slide7">
+            <div class="max-w-7xl w-full animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Business Model & <span class="text-orange">Revenue</span></h2>
+                <div class="grid md:grid-cols-4 gap-4 mb-8 text-center">
+                    <div class="bg-gray-800 p-4 rounded-lg fade-in-up delay-1">
+                        <h3 class="text-xl font-semibold mb-2">Freemium</h3>
+                        <p class="text-sm text-gray-300">Pro subscriptions for advanced features.</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg fade-in-up delay-2">
+                        <h3 class="text-xl font-semibold mb-2">Affiliates</h3>
+                        <p class="text-sm text-gray-300">Commission from equipment sales.</p>
+                    </div>
+                    <div class="bg-gray-800 p-4 rounded-lg fade-in-up delay-3">
+                        <h3 class="text-xl font-semibold mb-2">Coaching</h3>
+                        <p class="text-sm text-gray-300">Marketplace fee on coaching sessions.</p>
+                    </div>
+                     <div class="bg-gray-800 p-4 rounded-lg fade-in-up delay-4">
+                        <h3 class="text-xl font-semibold mb-2">Advertising</h3>
+                        <p class="text-sm text-gray-300">Targeted ads for sports brands.</p>
+                    </div>
+                </div>
+                 <div class="overflow-x-auto fade-in-up delay-5">
+                    <table class="table-custom">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Focus</th>
+                                <th>Premium Revenue</th>
+                                <th>Affiliate Revenue</th>
+                                <th>Coaching Revenue</th>
+                                <th class="text-orange">Total Annual Revenue</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Year 1</td>
+                                <td>India-Tennis</td>
+                                <td>~₹0.71 Cr</td>
+                                <td>~₹0.52 Cr</td>
+                                <td>~₹0.18 Cr</td>
+                                <td class="highlight-cell">~₹1.86 Crores</td>
+                            </tr>
+                            <tr>
+                                <td>Year 2</td>
+                                <td>India-Multi-Sport</td>
+                                <td>~₹4.46 Cr</td>
+                                <td>~₹3.10 Cr</td>
+                                <td>~₹1.13 Cr</td>
+                                <td class="highlight-cell">~₹10.41 Crores</td>
+                            </tr>
+                            <tr>
+                                <td>Year 3</td>
+                                <td>International</td>
+                                <td>~$12.6M</td>
+                                <td>~$4.5M</td>
+                                <td>~$0.36M</td>
+                                <td class="highlight-cell">~$18.36M (~₹153 Cr+)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                     <p class="text-xs text-gray-400 mt-2 text-right">Illustrative projections. Total revenue includes a scalable advertising model. See notes for detailed assumptions on each stream.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide8">
+             <div class="max-w-6xl w-full animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Execution & <span class="text-orange">Roadmap</span></h2>
+                <div class="grid md:grid-cols-2 gap-10">
+                    <div class="fade-in-up delay-1 bg-gray-800 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-orange">Year 1: MVP & Initial Traction</h3>
+                        <p class="mb-4">A 12-week sprint to launch our Tennis MVP using a powerful no-code tool for rapid development.</p>
+                        <ul class="space-y-2 text-gray-300 list-disc list-inside">
+                             <li>Launch MVP (Tennis Gear Tracking)</li>
+                             <li>Intensive AI model training for wear & tear</li>
+                             <li>Initial user acquisition in Bangalore</li>
+                        </ul>
+                    </div>
+                    <div class="fade-in-up delay-2 bg-gray-800 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-4 text-orange">Year 2 & Beyond: Ecosystem Growth</h3>
+                         <p class="mb-4">Scale our product offerings and market reach globally, building a full player ecosystem.</p>
+                        <ul class="space-y-2 text-gray-300 list-disc list-inside">
+                             <li>Expand AI to Badminton, Squash, Running</li>
+                             <li>Launch <strong class="text-white">Video Analysis & Coaching Marketplace</strong></li>
+                             <li>Enter key East Asian & global markets</li>
+                        </ul>
+                    </div>
+                 </div>
+            </div>
+        </section>
+
+        <section class="slide" id="slide9">
+            <div class="text-center max-w-4xl animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 fade-in-up">The Team & <span class="text-orange">The Ask</span></h2>
+                <div class="bg-gray-800 p-8 rounded-lg mb-12 fade-in-up delay-1">
+                    <h3 class="text-2xl font-semibold">[Your Name Here] - Founder</h3>
+                    <p class="text-lg text-orange">Visionary, Product Lead, Market Expert</p>
+                    <p class="text-gray-300 mt-4 max-w-2xl mx-auto">Avid recreational athlete with 15+ years of experience and a deep understanding of the problem space. Proven ability to execute resourcefully using no-code and strategic AI integration.</p>
+                </div>
+                <div class="fade-in-up delay-2">
+                    <h3 class="text-3xl font-semibold">We are seeking <span class="text-orange">₹50 Lakhs to ₹1.5 Crores</span> in seed funding to:</h3>
+                    <ul class="mt-6 text-lg text-gray-200 space-y-2 list-none">
+                        <li class="fade-in-up delay-3">🚀 Accelerate user acquisition in India.</li>
+                        <li class="fade-in-up delay-4">🤖 Rapidly expand the AI model to more sports.</li>
+                        <li class="fade-in-up delay-5">🤝 Build our core team and prepare for international entry.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Animation on scroll observer
+            const animationObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1 
+            });
+
+            const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+            elementsToAnimate.forEach(el => {
+                animationObserver.observe(el);
+            });
+
+            // --- Corrected Navigation Logic ---
+            const navToggle = document.getElementById('nav-toggle');
+            const sideNav = document.getElementById('side-nav');
+            const navOverlay = document.getElementById('nav-overlay');
+            const navLinks = document.querySelectorAll('.nav-link');
+            const scrollContainer = document.querySelector('.scroll-container');
+
+            function closeNav() {
+                sideNav.classList.remove('open');
+                navOverlay.classList.remove('visible');
+            }
+
+            navToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                sideNav.classList.toggle('open');
+                navOverlay.classList.toggle('visible');
+            });
+            
+            navOverlay.addEventListener('click', closeNav);
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', (event) => {
+                    event.preventDefault(); // Prevent default anchor behavior
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // Manually scroll the container to the target element
+                        scrollContainer.scrollTo({
+                            top: targetElement.offsetTop,
+                            behavior: 'smooth'
+                        });
+                    }
+
+                    closeNav(); // Close the nav after processing the click
+                });
+            });
+
+            // Active link highlighting on scroll
+            const sectionObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        document.querySelector('.nav-link.active')?.classList.remove('active');
+                        document.querySelector(`.nav-link[href="#${id}"]`)?.classList.add('active');
+                    }
+                });
+            }, {
+                root: scrollContainer, // Observe within the scroll container
+                threshold: 0.5,
+            });
+
+            document.querySelectorAll('section.slide').forEach(section => {
+                sectionObserver.observe(section);
+            });
+        });
+    </script>
+
+</body>
+</html>
+
