@@ -10,8 +10,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         /* Custom styles for the pitch deck */
-        html {
-            scroll-behavior: smooth;
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden; /* Prevent default body scrolling */
         }
 
         body {
@@ -21,29 +24,42 @@
         }
 
         .scroll-container {
-            scroll-snap-type: y mandatory;
-            overflow-y: scroll;
             height: 100vh;
+            overflow-y: scroll;
+            scroll-snap-type: y mandatory; /* Re-enabled for firm scroll feel */
         }
 
         .slide {
-            scroll-snap-align: start;
             height: 100vh;
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             padding: 2rem 4rem;
+            scroll-snap-align: start; /* Re-enabled for firm scroll feel */
+            scroll-snap-stop: always;
         }
         
         @media (max-width: 768px) {
+            html, body {
+                overflow: auto; /* Allow normal scrolling on mobile */
+            }
+            .scroll-container {
+                overflow-y: visible;
+                height: auto;
+                scroll-snap-type: none; /* Disable snap on mobile */
+            }
             .slide {
-                padding: 1rem 1.5rem;
+                padding: 4rem 1.5rem 2rem;
                 height: auto;
                 min-height: 100vh;
+                scroll-snap-align: none;
             }
             .solution-flow {
                 flex-direction: column;
+            }
+            .sport-icons-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
 
@@ -169,18 +185,59 @@
             opacity: 1;
             visibility: visible;
         }
+        
+        /* Interactive Market Opportunity Slide */
+        .sport-icon {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0.5;
+            filter: grayscale(80%);
+        }
+        .sport-icon.active {
+            opacity: 1;
+            filter: grayscale(0%);
+            transform: scale(1.1);
+            border-color: #F97316;
+        }
+        
+        /* Calculation Modal Styles */
+        #calculation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 120;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        #calculation-modal .modal-content {
+            background-color: #1f2937;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
 
     </style>
 </head>
 <body>
+    <!-- Navigation Toggle Button -->
     <button id="nav-toggle" title="Toggle Navigation">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
         </svg>
     </button>
     
+    <!-- Navigation Overlay for closing nav on click outside -->
     <div id="nav-overlay"></div>
 
+    <!-- Side Navigation -->
     <nav id="side-nav">
         <h2 class="text-2xl font-bold text-white mb-8">Navigation</h2>
         <ul class="space-y-2">
@@ -192,11 +249,13 @@
             <li><a href="#slide6" class="nav-link">Competitors</a></li>
             <li><a href="#slide7" class="nav-link">Business Model</a></li>
             <li><a href="#slide8" class="nav-link">Roadmap</a></li>
-            <li><a href="#slide9" class="nav-link">Team & Ask</a></li>
+            <li><a href="#slide9" class="nav-link">The Ask</a></li>
+            <li><a href="#slide10" class="nav-link">Team</a></li>
         </ul>
     </nav>
 
-    <div class="scroll-container">
+    <div class="scroll-container" id="scroll-container">
+        <!-- Slide 1: Title -->
         <section class="slide" id="slide1">
             <div class="text-center animate-on-scroll">
                 <h1 class="text-5xl md:text-7xl font-bold fade-in-up">
@@ -212,6 +271,7 @@
             </div>
         </section>
 
+        <!-- Slide 2: The Problem -->
         <section class="slide" id="slide2">
             <div class="max-w-6xl w-full animate-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up"><span class="text-orange">The Problem</span> We're Solving</h2>
@@ -232,6 +292,7 @@
             </div>
         </section>
 
+        <!-- Slide 3: Our Solution -->
         <section class="slide" id="slide3">
              <div class="max-w-6xl w-full animate-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">A Complete <span class="text-orange">Ecosystem for Athletes</span></h2>
@@ -262,6 +323,7 @@
             </div>
         </section>
 
+        <!-- Slide 4: The Product (MVP Features) -->
         <section class="slide" id="slide4">
             <div class="max-w-6xl w-full animate-on-scroll">
                  <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">The <span class="text-orange">MVP</span> for Tennis</h2>
@@ -286,44 +348,80 @@
             </div>
         </section>
 
+        <!-- Slide 5: Market Opportunity -->
         <section class="slide" id="slide5">
             <div class="max-w-6xl w-full animate-on-scroll">
-                <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Massive <span class="text-orange">Global Potential</span></h2>
-                <div class="grid md:grid-cols-2 gap-8">
-                    <div class="fade-in-up delay-1">
-                        <h3 class="text-2xl font-bold mb-4">Market Funnel (Bangalore - Tennis)</h3>
-                        <div class="space-y-3 bg-gray-800 p-6 rounded-lg">
-                            <div>
-                                <p class="text-lg"><strong class="text-orange">TAM:</strong> 650,000</p>
-                                <p class="text-sm text-gray-400">Recreational tennis players.</p>
-                            </div>
-                            <div class="border-t border-gray-700 pt-3 mt-3">
-                                <p class="text-lg"><strong class="text-orange">SAM:</strong> 195,000 <span class="text-base text-gray-300">(30% of TAM)</span></p>
-                                <p class="text-sm text-gray-400">Potential users who will show interest in the app.</p>
-                            </div>
-                            <div class="border-t border-gray-700 pt-3 mt-3">
-                                <p class="text-lg"><strong class="text-orange">SOM:</strong> ~29,000 <span class="text-base text-gray-300">(15% of SAM)</span></p>
-                                <p class="text-sm text-gray-400">Our initial target active user base, a fraction of whom will become paid users.</p>
-                            </div>
-                        </div>
+                <h2 class="text-4xl md:text-5xl font-bold text-center mb-6 fade-in-up">PAN India <span class="text-orange">Market Opportunity</span></h2>
+                <p class="text-center text-lg text-gray-300 max-w-3xl mx-auto mb-10 fade-in-up delay-1">Select a sport to see the specific market funnel and our rollout focus.</p>
+
+                <!-- Sport Icons -->
+                <div class="grid grid-cols-3 md:grid-cols-6 gap-4 mb-10 fade-in-up delay-2 sport-icons-grid">
+                    <!-- Tennis Icon -->
+                    <div id="icon-tennis" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="tennis">
+                        <svg class="w-12 h-12 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M15.5 15.5L20 20"></path><path d="M12 2L12 12"></path></svg>
+                        <p class="text-sm mt-1 font-semibold">Tennis</p>
+                        <span class="text-xs text-orange font-bold">Immediate Focus</span>
                     </div>
-                     <div class="fade-in-up delay-2">
-                        <h3 class="text-2xl font-bold mb-4">Broader Vision & Scalability</h3>
-                         <div class="space-y-3 bg-gray-800 p-6 rounded-lg h-full flex flex-col justify-around">
-                            <div>
-                                <p class="font-semibold text-white">India-Wide & Multi-Sport</p>
-                                <p class="text-gray-300">Expanding to Tennis, Badminton, Squash, & Running increases our Indian SOM to over <strong class="text-orange">755,000</strong> users.</p>
-                            </div>
-                            <div>
-                                <p class="font-semibold text-white">Ecosystem Expansion</p>
-                                <p class="text-gray-300">We will build an ecosystem by integrating an <strong class="text-orange">in-app coaching marketplace</strong>, where users pay for expert video analysis, creating a new high-value revenue stream.</p>
-                            </div>
-                        </div>
+                     <!-- Badminton Icon -->
+                    <div id="icon-badminton" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="badminton">
+                        <svg class="w-12 h-12 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18.68 12.16l-5.81 5.81a1 1 0 01-1.41 0l-1.1-1.1a1 1 0 010-1.41l5.81-5.81a1 1 0 011.41 0l1.1 1.1a1 1 0 010 1.41z"></path><path d="M11.16 8.84L7.5 5.17"></path><path d="M15.17 12.84L11.5 9.17"></path><path d="M12.5 15.5l-1-1"></path><path d="M8.5 11.5l-1-1"></path><path d="M12 2v4"></path><path d="M12 18v4"></path><path d="M22 12h-4"></path><path d="M6 12H2"></path></svg>
+                        <p class="text-sm mt-1 font-semibold">Badminton</p>
+                         <span class="text-xs text-gray-400">Future Focus</span>
                     </div>
+                     <!-- Running Icon -->
+                    <div id="icon-running" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="running">
+                        <svg class="w-12 h-12 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 3.5l3 3m0 0l-3 3m3-3H4"></path><path d="M11 20.5l-3-3m0 0l3-3m-3 3H20"></path></svg>
+                        <p class="text-sm mt-1 font-semibold">Running</p>
+                         <span class="text-xs text-gray-400">Future Focus</span>
+                    </div>
+                     <!-- Squash Icon -->
+                    <div id="icon-squash" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="squash">
+                        <svg class="w-12 h-12 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line></svg>
+                        <p class="text-sm mt-1 font-semibold">Squash</p>
+                         <span class="text-xs text-gray-400">Future Focus</span>
+                    </div>
+                     <!-- Basketball Icon -->
+                    <div id="icon-basketball" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="basketball">
+                        <svg class="w-12 h-12 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 00-10 10c0 1.9.5 3.7 1.4 5.2"></path><path d="M22 12a10 10 0 00-10-10c-1.9 0-3.7.5-5.2 1.4"></path></svg>
+                        <p class="text-sm mt-1 font-semibold">Basketball</p>
+                         <span class="text-xs text-gray-400">Future Focus</span>
+                    </div>
+                    <!-- All Sports Icon -->
+                    <div id="icon-all" class="sport-icon text-center p-2 border-b-2 border-transparent" data-sport="all">
+                         <svg class="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM3.483 8.35a6.012 6.012 0 018.862-5.064 6.012 6.012 0 015.064 8.862L16.517 11.65a6.012 6.012 0 01-8.862 5.064A6.012 6.012 0 012.588 7.85l.895.5z"></path></svg>
+                        <p class="text-sm mt-1 font-semibold">All Sports</p>
+                        <span class="text-xs text-gray-400">Total</span>
+                    </div>
+                </div>
+
+                <!-- Market Funnel Display -->
+                <div class="bg-gray-800 p-8 rounded-lg fade-in-up delay-3">
+                     <h3 class="text-2xl font-bold mb-6 text-center" id="market-title">PAN India Tennis Opportunity</h3>
+                     <div class="grid md:grid-cols-3 gap-6 text-center">
+                        <div>
+                            <p class="text-3xl font-bold text-orange" id="tam-value">2.6M</p>
+                            <p class="text-lg text-gray-300">Total Addressable Market</p>
+                            <p class="text-sm text-gray-400">Total players in India</p>
+                        </div>
+                         <div class="border-l border-r border-gray-700 px-6">
+                            <p class="text-3xl font-bold text-orange" id="sam-value">790k</p>
+                            <p class="text-lg text-gray-300">Serviceable Available Market</p>
+                            <p class="text-sm text-gray-400">30% of TAM showing interest</p>
+                        </div>
+                         <div>
+                            <p class="text-3xl font-bold text-orange" id="som-value">119k</p>
+                            <p class="text-lg text-gray-300">Serviceable Obtainable Market</p>
+                            <p class="text-sm text-gray-400">15% of SAM as initial target</p>
+                        </div>
+                     </div>
+                     <div class="text-center mt-6">
+                        <button id="show-calculation-btn" class="text-orange hover:underline text-sm">Show Calculation</button>
+                     </div>
                 </div>
             </div>
         </section>
 
+        <!-- Slide 6: Competitive Landscape -->
         <section class="slide" id="slide6">
             <div class="max-w-7xl w-full animate-on-scroll">
                 <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 fade-in-up">Competitive <span class="text-orange">Landscape</span></h2>
@@ -353,6 +451,7 @@
             </div>
         </section>
 
+        <!-- Slide 7: Business Model & Revenue Projections -->
         <section class="slide" id="slide7">
             <div class="max-w-7xl w-full animate-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Business Model & <span class="text-orange">Revenue</span></h2>
@@ -389,7 +488,7 @@
                         <tbody>
                             <tr>
                                 <td>Year 1</td>
-                                <td>India-Tennis</td>
+                                <td>Tennis (India)</td>
                                 <td>~₹0.71 Cr</td>
                                 <td>~₹0.52 Cr</td>
                                 <td>~₹0.18 Cr</td>
@@ -397,27 +496,28 @@
                             </tr>
                             <tr>
                                 <td>Year 2</td>
-                                <td>India-Multi-Sport</td>
-                                <td>~₹4.46 Cr</td>
-                                <td>~₹3.10 Cr</td>
+                                <td>Multi-Sport (India)</td>
+                                <td>~₹4.48 Cr</td>
+                                <td>~₹3.07 Cr</td>
                                 <td>~₹1.13 Cr</td>
-                                <td class="highlight-cell">~₹10.41 Crores</td>
+                                <td class="highlight-cell">~₹10.4 Cr</td>
                             </tr>
                             <tr>
                                 <td>Year 3</td>
-                                <td>International</td>
-                                <td>~$12.6M</td>
-                                <td>~$4.5M</td>
-                                <td>~$0.36M</td>
-                                <td class="highlight-cell">~$18.36M (~₹153 Cr+)</td>
+                                <td>Multi-Sport (Global)</td>
+                                <td>~₹11.4 Cr</td>
+                                <td>~₹4.1 Cr</td>
+                                <td>~₹1.13 Cr</td>
+                                <td class="highlight-cell">~₹128 Cr+</td>
                             </tr>
                         </tbody>
                     </table>
-                     <p class="text-xs text-gray-400 mt-2 text-right">Illustrative projections. Total revenue includes a scalable advertising model. See notes for detailed assumptions on each stream.</p>
+                     <p class="text-xs text-gray-400 mt-2 text-right">Illustrative projections. Year 3 includes international expansion. Total revenue includes a scalable advertising model.</p>
                 </div>
             </div>
         </section>
 
+        <!-- Slide 8: MVP Roadmap -->
         <section class="slide" id="slide8">
              <div class="max-w-6xl w-full animate-on-scroll">
                 <h2 class="text-4xl md:text-5xl font-bold text-center mb-12 fade-in-up">Execution & <span class="text-orange">Roadmap</span></h2>
@@ -444,15 +544,12 @@
             </div>
         </section>
 
+        <!-- Slide 9: The Ask -->
         <section class="slide" id="slide9">
             <div class="text-center max-w-4xl animate-on-scroll">
-                <h2 class="text-4xl md:text-5xl font-bold mb-8 fade-in-up">The Team & <span class="text-orange">The Ask</span></h2>
-                <div class="bg-gray-800 p-8 rounded-lg mb-12 fade-in-up delay-1">
-                    <h3 class="text-2xl font-semibold">[Your Name Here] - Founder</h3>
-                    <p class="text-lg text-orange">Visionary, Product Lead, Market Expert</p>
-                    <p class="text-gray-300 mt-4 max-w-2xl mx-auto">Avid recreational athlete with 15+ years of experience and a deep understanding of the problem space. Proven ability to execute resourcefully using no-code and strategic AI integration.</p>
-                </div>
-                <div class="fade-in-up delay-2">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 fade-in-up"><span class="text-orange">The Ask</span></h2>
+                <!-- This is a blank slide as requested. Content can be added here. -->
+                 <div class="fade-in-up delay-2">
                     <h3 class="text-3xl font-semibold">We are seeking <span class="text-orange">₹50 Lakhs to ₹1.5 Crores</span> in seed funding to:</h3>
                     <ul class="mt-6 text-lg text-gray-200 space-y-2 list-none">
                         <li class="fade-in-up delay-3">🚀 Accelerate user acquisition in India.</li>
@@ -462,33 +559,83 @@
                 </div>
             </div>
         </section>
+        
+        <!-- Slide 10: Team -->
+        <section class="slide" id="slide10">
+            <div class="text-center max-w-4xl animate-on-scroll">
+                <h2 class="text-4xl md:text-5xl font-bold mb-8 fade-in-up"><span class="text-orange">The Team</span></h2>
+                <div class="bg-gray-800 p-8 rounded-lg mb-12 fade-in-up delay-1">
+                    <h3 class="text-2xl font-semibold">[Your Name Here] - Founder</h3>
+                    <p class="text-lg text-orange">Visionary, Product Lead, Market Expert</p>
+                    <p class="text-gray-300 mt-4 max-w-2xl mx-auto">Avid recreational athlete with 15+ years of experience and a deep understanding of the problem space. Proven ability to execute resourcefully using no-code and strategic AI integration.</p>
+                </div>
+            </div>
+        </section>
 
+    </div>
+    
+    <!-- Calculation Modal -->
+    <div id="calculation-modal" class="hidden">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-2xl font-bold text-orange">Market Size Calculation Assumptions</h3>
+                <button id="close-modal-btn" class="text-2xl font-bold">&times;</button>
+            </div>
+            <div class="text-gray-300 space-y-4">
+                <p>Our market size is calculated using a top-down approach based on the following assumptions:</p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li><strong class="text-white">Total Addressable Market (TAM):</strong> Represents the total estimated number of recreational players for each sport in India.</li>
+                    <li><strong class="text-white">Serviceable Available Market (SAM):</strong> We assume we can reach and attract <strong class="text-orange">30%</strong> of the TAM who would be interested in an app like ours.
+                        <br><span class="text-sm text-gray-400">Formula: SAM = TAM * 30%</span>
+                    </li>
+                    <li><strong class="text-white">Serviceable Obtainable Market (SOM):</strong> Our initial realistic target is to capture <strong class="text-orange">15%</strong> of the SAM as our active user base in the early years.
+                         <br><span class="text-sm text-gray-400">Formula: SOM = SAM * 15%</span>
+                    </li>
+                </ul>
+                <div class="overflow-x-auto pt-4">
+                    <table class="table-custom w-full">
+                        <thead>
+                            <tr>
+                                <th>Sport</th>
+                                <th>TAM</th>
+                                <th>SAM (30% of TAM)</th>
+                                <th>SOM (15% of SAM)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>Tennis</td><td>2.6M</td><td>790k</td><td>119k</td></tr>
+                            <tr><td>Badminton</td><td>4.0M</td><td>1.2M</td><td>250k</td></tr>
+                            <tr><td>Running</td><td>5.0M</td><td>1.5M</td><td>300k</td></tr>
+                            <tr><td>Basketball</td><td>1.5M</td><td>450k</td><td>68k</td></tr>
+                            <tr><td>Squash</td><td>500k</td><td>150k</td><td>18k</td></tr>
+                            <tr class="font-bold border-t-2 border-orange"><td class="text-orange">Total</td><td class="text-orange">13.1M</td><td class="text-orange">3.9M</td><td class="text-orange">755k</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Animation on scroll observer
+            const slides = Array.from(document.querySelectorAll('.slide'));
+            const scrollContainer = document.getElementById('scroll-container');
+            
+            // --- Animation Observer ---
             const animationObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
                     }
                 });
-            }, {
-                threshold: 0.1 
-            });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.animate-on-scroll').forEach(el => animationObserver.observe(el));
 
-            const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
-            elementsToAnimate.forEach(el => {
-                animationObserver.observe(el);
-            });
-
-            // --- Corrected Navigation Logic ---
+            // --- Navigation Menu Logic ---
             const navToggle = document.getElementById('nav-toggle');
             const sideNav = document.getElementById('side-nav');
             const navOverlay = document.getElementById('nav-overlay');
             const navLinks = document.querySelectorAll('.nav-link');
-            const scrollContainer = document.querySelector('.scroll-container');
 
             function closeNav() {
                 sideNav.classList.remove('open');
@@ -505,19 +652,13 @@
 
             navLinks.forEach(link => {
                 link.addEventListener('click', (event) => {
-                    event.preventDefault(); // Prevent default anchor behavior
+                    event.preventDefault(); 
                     const targetId = link.getAttribute('href');
                     const targetElement = document.querySelector(targetId);
-                    
                     if (targetElement) {
-                        // Manually scroll the container to the target element
-                        scrollContainer.scrollTo({
-                            top: targetElement.offsetTop,
-                            behavior: 'smooth'
-                        });
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
                     }
-
-                    closeNav(); // Close the nav after processing the click
+                    closeNav();
                 });
             });
 
@@ -527,20 +668,67 @@
                     if (entry.isIntersecting) {
                         const id = entry.target.getAttribute('id');
                         document.querySelector('.nav-link.active')?.classList.remove('active');
-                        document.querySelector(`.nav-link[href="#${id}"]`)?.classList.add('active');
+                        const newActiveLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                        if(newActiveLink) {
+                            newActiveLink.classList.add('active');
+                        }
                     }
                 });
-            }, {
-                root: scrollContainer, // Observe within the scroll container
-                threshold: 0.5,
-            });
+            }, { root: scrollContainer, threshold: 0.5 });
 
-            document.querySelectorAll('section.slide').forEach(section => {
-                sectionObserver.observe(section);
+            slides.forEach(section => sectionObserver.observe(section));
+
+            // --- Interactive Market Opportunity Logic ---
+            const marketData = {
+                all: { title: 'Total PAN India Opportunity', tam: '13.1M', sam: '3.9M', som: '755k' },
+                tennis: { title: 'PAN India Tennis Opportunity', tam: '2.6M', sam: '790k', som: '119k' },
+                badminton: { title: 'PAN India Badminton Opportunity', tam: '4.0M', sam: '1.2M', som: '250k' },
+                running: { title: 'PAN India Running Opportunity', tam: '5.0M', sam: '1.5M', som: '300k' },
+                basketball: { title: 'PAN India Basketball Opportunity', tam: '1.5M', sam: '450k', som: '68k' },
+                squash: { title: 'PAN India Squash Opportunity', tam: '500k', sam: '150k', som: '18k' }
+            };
+
+            const marketTitle = document.getElementById('market-title');
+            const tamValue = document.getElementById('tam-value');
+            const samValue = document.getElementById('sam-value');
+            const somValue = document.getElementById('som-value');
+            const icons = document.querySelectorAll('.sport-icon');
+            
+            function updateMarketView(sport) {
+                icons.forEach(i => i.classList.remove('active'));
+                document.getElementById(`icon-${sport}`).classList.add('active');
+                
+                const data = marketData[sport];
+                
+                marketTitle.textContent = data.title;
+                tamValue.textContent = data.tam;
+                samValue.textContent = data.sam;
+                somValue.textContent = data.som;
+            }
+
+            icons.forEach(icon => {
+                icon.addEventListener('click', () => {
+                   const sport = icon.dataset.sport;
+                   updateMarketView(sport);
+                });
+            });
+            
+            updateMarketView('tennis');
+
+            // --- Calculation Modal Logic ---
+            const modal = document.getElementById('calculation-modal');
+            const showBtn = document.getElementById('show-calculation-btn');
+            const closeBtn = document.getElementById('close-modal-btn');
+
+            showBtn.addEventListener('click', () => modal.classList.remove('hidden'));
+            closeBtn.addEventListener('click', () => modal.classList.add('hidden'));
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.add('hidden');
+                }
             });
         });
     </script>
 
 </body>
 </html>
-
